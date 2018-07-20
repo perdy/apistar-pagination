@@ -1,4 +1,7 @@
 # Changes
+v0.3.0 - 2018-07-20
+ * Output schema with pagination metadata.
+
 v0.2.4 - 2018-06-07
  * Use poetry instead of pipenv.
  * Modify output types to fix schema generation.

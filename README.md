@@ -3,7 +3,7 @@
 [![codecov](https://codecov.io/gh/PeRDy/apistar-pagination/branch/master/graph/badge.svg)](https://codecov.io/gh/PeRDy/apistar-pagination)
 [![PyPI version](https://badge.fury.io/py/apistar-pagination.svg)](https://badge.fury.io/py/apistar-pagination)
 
-* **Version:** 0.1.0
+* **Version:** 0.2.4
 * **Status:** Production/Stable
 * **Author:** José Antonio Perdiguero López
 
@@ -28,7 +28,7 @@ Use paginated response in your views:
 from apistar_pagination import PageNumberResponse
 
 def page_number(page: http.QueryParam, page_size: http.QueryParam) -> typing.List[int]:
-    collection = ...  # Get your whole collection
+    collection = range(10)  # Get your whole collection instead of a list of numbers
 
     return PageNumberResponse(page=page, page_size=page_size, content=collection)
 ```
@@ -39,7 +39,7 @@ def page_number(page: http.QueryParam, page_size: http.QueryParam) -> typing.Lis
 from apistar_pagination import LimitOffsetResponse
 
 def limit_offset(offset: http.QueryParam, limit: http.QueryParam) -> typing.List[int]:
-    collection = ...  # Get your whole collection
+    collection = range(10)  # Get your whole collection instead of a list of numbers
 
     return LimitOffsetResponse(offset=offset, limit=limit, content=collection)
 ```

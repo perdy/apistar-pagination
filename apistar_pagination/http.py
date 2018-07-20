@@ -2,6 +2,8 @@ import typing
 
 from apistar.http import JSONResponse
 
+from apistar_pagination.schemas import LimitOffsetSchema, PageNumberSchema
+
 
 class PageNumberResponse(JSONResponse):
     """
@@ -19,7 +21,12 @@ class PageNumberResponse(JSONResponse):
 
     default_page_size = 10
 
-    def __init__(self, page: typing.Optional[int] = None, page_size: typing.Optional[int] = None, **kwargs):
+    def __init__(
+        self,
+        page: typing.Optional[typing.Union[int, str]] = None,
+        page_size: typing.Optional[typing.Union[int, str]] = None,
+        **kwargs
+    ):
         self.page_number = int(page) if page is not None else 1
         self.page_size = int(page_size) if page_size is not None else self.default_page_size
         super().__init__(**kwargs)
@@ -27,7 +34,14 @@ class PageNumberResponse(JSONResponse):
     def render(self, content: typing.Sequence):
         init = (self.page_number - 1) * self.page_size
         end = self.page_number * self.page_size
-        return super().render(content[init:end])
+        return super().render(
+            PageNumberSchema(
+                {
+                    "meta": {"page": self.page_number, "page_size": self.page_size, "count": len(content)},
+                    "data": content[init:end],
+                }
+            )
+        )
 
 
 class LimitOffsetResponse(JSONResponse):
@@ -43,7 +57,12 @@ class LimitOffsetResponse(JSONResponse):
 
     default_limit = 10
 
-    def __init__(self, offset: typing.Optional[int] = None, limit: typing.Optional[int] = None, **kwargs):
+    def __init__(
+        self,
+        offset: typing.Optional[typing.Union[int, str]] = None,
+        limit: typing.Optional[typing.Union[int, str]] = None,
+        **kwargs
+    ):
         self.offset = int(offset) if offset is not None else 0
         self.limit = int(limit) if limit is not None else self.default_limit
         super().__init__(**kwargs)
@@ -51,4 +70,8 @@ class LimitOffsetResponse(JSONResponse):
     def render(self, content: typing.Sequence):
         init = self.offset
         end = self.offset + self.limit
-        return super().render(content[init:end])
+        return super().render(
+            LimitOffsetSchema(
+                {"meta": {"limit": self.limit, "offset": self.offset, "count": len(content)}, "data": content[init:end]}
+            )
+        )
