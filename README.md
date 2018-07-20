@@ -3,7 +3,7 @@
 [![codecov](https://codecov.io/gh/PeRDy/apistar-pagination/branch/master/graph/badge.svg)](https://codecov.io/gh/PeRDy/apistar-pagination)
 [![PyPI version](https://badge.fury.io/py/apistar-pagination.svg)](https://badge.fury.io/py/apistar-pagination)
 
-* **Version:** 0.2.4
+* **Version:** 0.3.0
 * **Status:** Production/Stable
 * **Author:** José Antonio Perdiguero López
 
