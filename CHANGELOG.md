@@ -1,4 +1,7 @@
 # Changes
+v0.4.0 - 2018-10-08
+ * Allow the possibility of avoid counting items.
+
 v0.3.0 - 2018-07-20
  * Output schema with pagination metadata.
 
