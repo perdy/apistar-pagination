@@ -1,17 +1,25 @@
 import typing
 
 import pytest
-from apistar import App, ASyncApp, Route, TestClient, http
 
+from apistar import App, ASyncApp, Route, TestClient, http
 from apistar_pagination import LimitOffsetResponse, PageNumberResponse
 
 
-def limit_offset(offset: http.QueryParam, limit: http.QueryParam) -> typing.List[int]:
-    return LimitOffsetResponse(offset=offset, limit=limit, content=list(range(25)))
+def limit_offset(offset: http.QueryParam, limit: http.QueryParam, count: http.QueryParam) -> typing.List[int]:
+    params = {"limit": limit, "offset": offset, "content": list(range(25))}
+    if count in ("0", 0, "False", "false", False):
+        params["count"] = False
+
+    return LimitOffsetResponse(**params)
 
 
-def page_number(page: http.QueryParam, page_size: http.QueryParam) -> typing.List[int]:
-    return PageNumberResponse(page=page, page_size=page_size, content=list(range(25)))
+def page_number(page: http.QueryParam, page_size: http.QueryParam, count: http.QueryParam) -> typing.List[int]:
+    params = {"page": page, "page_size": page_size, "content": list(range(25))}
+    if count in ("0", 0, "False", "false", False):
+        params["count"] = False
+
+    return PageNumberResponse(**params)
 
 
 routes = [
@@ -48,6 +56,11 @@ class TestLimitOffsetResponse:
         assert response.status_code == 200
         assert response.json() == {"meta": {"limit": 20, "offset": 5, "count": 25}, "data": list(range(5, 25))}
 
+    def test_no_count(self, client):
+        response = client.get("/limit_offset", params={"count": False})
+        assert response.status_code == 200
+        assert response.json() == {"meta": {"limit": 10, "offset": 0, "count": None}, "data": list(range(10))}
+
 
 class TestPageNumberResponse:
     def test_default_params(self, client):
@@ -69,3 +82,8 @@ class TestPageNumberResponse:
         response = client.get("/page_number", params={"page": 4, "page_size": 5})
         assert response.status_code == 200
         assert response.json() == {"meta": {"page": 4, "page_size": 5, "count": 25}, "data": list(range(15, 20))}
+
+    def test_no_count(self, client):
+        response = client.get("/page_number", params={"count": False})
+        assert response.status_code == 200
+        assert response.json() == {"meta": {"page": 1, "page_size": 10, "count": None}, "data": list(range(10))}

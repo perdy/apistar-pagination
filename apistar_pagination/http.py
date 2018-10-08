@@ -1,7 +1,6 @@
 import typing
 
 from apistar.http import JSONResponse
-
 from apistar_pagination.schemas import LimitOffsetSchema, PageNumberSchema
 
 
@@ -25,10 +24,13 @@ class PageNumberResponse(JSONResponse):
         self,
         page: typing.Optional[typing.Union[int, str]] = None,
         page_size: typing.Optional[typing.Union[int, str]] = None,
+        count: typing.Optional[bool] = True,
         **kwargs
     ):
         self.page_number = int(page) if page is not None else 1
         self.page_size = int(page_size) if page_size is not None else self.default_page_size
+        self.count = count
+        print("Bar:", count)
         super().__init__(**kwargs)
 
     def render(self, content: typing.Sequence):
@@ -37,7 +39,11 @@ class PageNumberResponse(JSONResponse):
         return super().render(
             PageNumberSchema(
                 {
-                    "meta": {"page": self.page_number, "page_size": self.page_size, "count": len(content)},
+                    "meta": {
+                        "page": self.page_number,
+                        "page_size": self.page_size,
+                        "count": len(content) if self.count else None,
+                    },
                     "data": content[init:end],
                 }
             )
@@ -61,10 +67,12 @@ class LimitOffsetResponse(JSONResponse):
         self,
         offset: typing.Optional[typing.Union[int, str]] = None,
         limit: typing.Optional[typing.Union[int, str]] = None,
+        count: typing.Optional[bool] = True,
         **kwargs
     ):
         self.offset = int(offset) if offset is not None else 0
         self.limit = int(limit) if limit is not None else self.default_limit
+        self.count = count
         super().__init__(**kwargs)
 
     def render(self, content: typing.Sequence):
@@ -72,6 +80,9 @@ class LimitOffsetResponse(JSONResponse):
         end = self.offset + self.limit
         return super().render(
             LimitOffsetSchema(
-                {"meta": {"limit": self.limit, "offset": self.offset, "count": len(content)}, "data": content[init:end]}
+                {
+                    "meta": {"limit": self.limit, "offset": self.offset, "count": len(content) if self.count else None},
+                    "data": content[init:end],
+                }
             )
         )

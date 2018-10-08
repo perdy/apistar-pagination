@@ -7,8 +7,6 @@ license = "GPL-3.0+"
 readme = "README.md"
 repository = "https://github.com/PeRDy/apistar-pagination"
 keywords = ["apistar", "pagination"]
-
-[package]
 include = ["apistar_pagination/**/*.py"]
 
 [tool.poetry.dependencies]
@@ -22,6 +20,4 @@ pytest-cov = "^2.5"
 tox = "^3.0"
 clinner = "^1.9"
 ipython = "^6.4"
-
-[tool.poetry.extras]
-sqlalchemy = ["apistar-sqlalchemy"]
+ipdb = "^0.11.0"
